@@ -1,10 +1,8 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
-*/
 package main
 
-import "github.com/tejesh-reckonsys/deploy-helper/cmd"
+import (
+	"github.com/tejesh-reckonsys/deploy-helper/cmd"
+)
 
 func main() {
 	cmd.Execute()

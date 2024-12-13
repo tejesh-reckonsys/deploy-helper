@@ -1,4 +1,4 @@
-package parameterstore
+package parameters
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/tejesh-reckonsys/deploy-helper/pkg/aws"
 )
 
 func cleanParamName(name, prefix string) string {
@@ -17,14 +17,8 @@ func cleanParamName(name, prefix string) string {
 	return strings.ToUpper(without_prefix)
 }
 
-func FetchParams(prefix string) map[string]string {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-
-	if err != nil {
-		log.Fatalln("Error loading aws config:", err)
-	}
-
-	client := ssm.NewFromConfig(cfg)
+func FetchParams(prefix string, cfg aws.AWSConfig) map[string]string {
+	client := ssm.NewFromConfig(cfg.Config)
 
 	response := make(map[string]string)
 	var nextToken *string

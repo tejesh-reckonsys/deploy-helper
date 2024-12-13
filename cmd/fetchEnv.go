@@ -1,6 +1,3 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -10,7 +7,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	parameterstore "github.com/tejesh-reckonsys/deploy-helper/src/parameterStore"
+	"github.com/tejesh-reckonsys/deploy-helper/pkg/aws"
+	"github.com/tejesh-reckonsys/deploy-helper/pkg/aws/parameters"
 )
 
 // fetchEnvCmd represents the fetchEnv command
@@ -18,7 +16,7 @@ var fetchEnvCmd = &cobra.Command{
 	Use:   "fetch-env [flags] ssm-path",
 	Short: "Fetch environment variables from AWS SSM",
 	Long: `Fetch the parameters from the AWS Parameter store starting with a prefix.
-Can either output to stdin, or provide output flag to output to a file.`,
+Can either output to stdout, or provide output flag to output to a file.`,
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		outputPath := cmd.Flag("output").Value.String()
@@ -26,7 +24,7 @@ Can either output to stdin, or provide output flag to output to a file.`,
 			fmt.Println("Fetching parameters...")
 		}
 
-		params := parameterstore.FetchParams(args[0])
+		params := parameters.FetchParams(args[0], aws.GetDefaultConfig())
 		if outputPath != "" {
 			fmt.Println("Parameters fetched successfully.")
 			fmt.Println("Writing to", outputPath)
@@ -42,12 +40,12 @@ Can either output to stdin, or provide output flag to output to a file.`,
 		} else {
 			file = os.Stdout
 		}
-		parameterstore.WriteToEnvFile(params, file)
+		parameters.WriteToEnvFile(params, file)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(fetchEnvCmd)
 
-	fetchEnvCmd.PersistentFlags().StringP("output", "o", "", "File to output to. Ex: -o .env")
+	fetchEnvCmd.Flags().StringP("output", "o", "", "File to output to. Ex: -o .env")
 }

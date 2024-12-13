@@ -1,4 +1,4 @@
-.deploy-helper.yaml
-deploy-helper
+build/*
+.deploy-helper*.yaml
 .env
 .git
